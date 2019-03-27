@@ -10,7 +10,7 @@ $material_09g2s=array(
     "1539"=>array(
         "teploemkost"=>908,
         "plotnost"=>6949,
-        "teploprovodnost"=>35,2
+        "teploprovodnost"=>35.2
     ),
     "1508"=>array(
         "teploemkost"=>903,
@@ -123,21 +123,16 @@ $source_param=array(
 );
 
 $step_param=array(
-    "step"=>(double)$_POST["step"],
-    "timeStep"=>(double)$_POST["timeStep"]
+    "step"=>(float)$_POST["step"],
+    "timeStep"=>(float)$_POST["timeStep"]
 );
 
-// var_dump($plate_param);
-// var_dump($source_param);
-// var_dump($step_param);
-
-$test=new Teploraspredelenie($plate_param,$source_param,$step_param);
-// $test->show_all_parametrs();
-
-// // $arr[$accessTime][$plateZ][$plateX][$plateY]=1;
-// // $arr[$accessTime+1][$plateZ+1][$plateX+1][$plateY+1]=2;
+ $test=new Teploraspredelenie($plate_param,$source_param,$step_param);
 
 
+ $test->count_Raspr_Temperature();
+//  $test->show_Progon_koef();
+//  $test->show_koef_Matrix();
  $test->show_Raspredelenie();
 
 
