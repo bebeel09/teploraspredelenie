@@ -104,6 +104,8 @@ $material_09g2s=array(
     )
 );
 
+
+
 //размеры пластины
 $plate_param=array(
     "plateX"=>(int)$_POST["plateX"],
@@ -114,26 +116,30 @@ $plate_param=array(
 );
 
 $source_param=array(
-    "sourceX"=>(int)$_POST["sourceX"],
+    "sourceX"=>(float)$_POST["sourceX"],
     "sourceY"=>(int)$_POST["sourceY"],
     "sourceZ"=>(int)$_POST["sourceZ"],
     "sourceTemperature"=>(float)$_POST["sourceTemperature"],
-    "sourceTime"=>(int)$_POST["sourceTime"],
+    "sourceSpeed"=>(int)$_POST["sourceSpeed"],
 
 );
 
 $step_param=array(
-    "step"=>(float)$_POST["step"],
     "timeStep"=>(float)$_POST["timeStep"]
 );
+
 
  $test=new Teploraspredelenie($plate_param,$source_param,$step_param);
 
 
- $test->count_Raspr_Temperature();
-//  $test->show_Progon_koef();
+ //var_dump($test->koef_heat_emission(1500));
+// var_dump($test->thermophysical_properties(-100));
+ //var_dump($res=$test->koef_heat_emission(20));
+$test->show_all_parametrs();
+$test->count_Raspr_Temperature();
+ //$test->show_Progon_koef();
 //  $test->show_koef_Matrix();
- $test->show_Raspredelenie();
+$test->show_Raspredelenie();
 
 
 ?>
