@@ -137,9 +137,6 @@ class Teploraspredelenie{
         $this->nextStartPosition=0;
     }
 
-   
-
-
     public function count_Raspr_Temperature(){
         for($t=1;$t<$this->justMomentOfTime;$t++){
             //по оси Y
@@ -148,11 +145,10 @@ class Teploraspredelenie{
             // по оси Z
              $this->go_Z($t);
 
-             $this->nextStartPosition++;
-            
-             //по оси x
-            $this->go_X($t);     
+             $this->nextStartPosition++;               
         }
+        //по оси x
+        $this->go_X($t); 
     }
 
     private function go_Y($time_moment){
@@ -222,55 +218,23 @@ class Teploraspredelenie{
 
     } 
 
-    private function go_X_count($time_index,$start_index,$exit_index){
-        $t=$time_index;
-        for($z=0;$z<$this->plateZ;$z++){
-            for($y=0;$y<$this->plateY;$y++){
-                for($x=$index_start;$x<$exit_index;$x++){
-                    $this->A($t,$z,$x,$y,"X");
-                    $this->B($t,$z,$x,$y,"X");
-                    $this->C($t,$z,$x,$y,"X");
-                    $this->D($t,$z,$x,$y,"X");
-                    if($x<$exit_index-1){
-                        $this->Alpha($x);
-                        $this->Beta($x);
-                    }
-                }
-                $N=$exit_index-1;
-
-                $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
-                if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
-                    $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
-                }
-                //расчёт обратным шагом по всей оси x
-                for($x=$N-1;$x>=1;$x--){
-                    $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
-                    if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
-                        $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
-                    }
-                }
-            }
-        }
-    }
-
-    private function go_X($time_moment){
-        $t=$time_moment;
-
-        for($z=0;$z<$this->plateZ;$z++){
-            for($y=0;$y<$this->plateY;$y++){
-                if($z>=$this->sourceZ-1){
-                    # проходим по всей оси x в случае если на пути не встречается горелка
-                    for($x=1;$x<$this->partitionPlateX;$x++){
+    private function go_X_count($start_index_Z,$exit_index_Z,$start_index_X,$exit_index_X,$start_index_Y,$exit_index_Y){
+      
+        for($t=1; $t<$this->justMomentOfTime;$t++){
+            for($z=$start_index_Z; $z<$exit_index_Z; $z++){
+                for($y=$start_index_Y; $y<$exit_index_Y; $y++){
+                    for($x=$start_index_X; $x<$exit_index_X; $x++){
                         $this->A($t,$z,$x,$y,"X");
                         $this->B($t,$z,$x,$y,"X");
                         $this->C($t,$z,$x,$y,"X");
                         $this->D($t,$z,$x,$y,"X");
-                        if($x<$this->partitionPlateX-1){
+                        if($x<$exit_index_X-1){
                             $this->Alpha($x);
                             $this->Beta($x);
                         }
                     }
-                    $N=$this->partitionPlateX-1;
+                    $N=$exit_index_X-1;
+
                     $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
                     if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
                         $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
@@ -282,94 +246,89 @@ class Teploraspredelenie{
                             $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
                         }
                     }
-
-                }else if($y>=$this->sourceY-1 ){
-                      # проходим по всей оси x в случае если на пути не встречается горелка
-                      for($x=1;$x<$this->partitionPlateX;$x++){
-                            $this->A($t,$z,$x,$y,"X");
-                            $this->B($t,$z,$x,$y,"X");
-                            $this->C($t,$z,$x,$y,"X");
-                            $this->D($t,$z,$x,$y,"X");
-                            if($x<$this->partitionPlateX-1){
-                                $this->Alpha($x);
-                                $this->Beta($x);
-                            }
-                        }
-                        $N=$this->partitionPlateX-1;
-                        $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
-                        if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
-                            $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
-                        }
-                        //расчёт обратным шагом по всей оси x
-                        for($x=$N-1;$x>=1;$x--){
-                            $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
-                            if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
-                                $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
-                            }
-                        }           
-                    }
-                    // else {
-                    //     # проходим по оси x деля её на область до и после горелки
-                    //     $frontX=$this->nextStartPosition+$this->partitionSourceX;
-                    //     for($x=1;$x<=$this->nextStartPosition;$x++){
-                    //         $this->A($t,$z,$x,$y,"X");
-                    //         $this->B($t,$z,$x,$y,"X");
-                    //         $this->C($t,$z,$x,$y,"X");
-                    //         $this->D($t,$z,$x,$y,"X");
-                    //         if($x<$this->nextStartPosition+1){
-                    //             $this->Alpha($x);
-                    //             $this->Beta($x);
-                    //         }
-                    //     }
-                    //     $N=$this->nextStartPosition;
-                    //     $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
-                    //     if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
-                    //         $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
-                    //     }
-                    //     //расчёт обратным шагом по оси x от начала пластины и до начала источника
-                    //     for($x=$N-1;$x>0;$x--){
-                    //         $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
-                    //         if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
-                    //             $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
-                    //         }
-                    //     }
-
-                    //     $this->koef_Progon_Matrix=array(
-                    //         "Alpha"=>array(),
-                    //         "Beta"=>array(),
-                    //     ); 
-    
-                    //     if($this->nextStartPosition+$this->partitionSourceX!=$this->partitionPlateX-1){
-                    //         for($x=$frontX-1;$x<$this->partitionPlateX;$x++){
-                    //             $this->A($t,$z,$x,$y,"X");
-                    //             $this->B($t,$z,$x,$y,"X");
-                    //             $this->C($t,$z,$x,$y,"X");
-                    //             $this->D($t,$z,$x,$y,"X");
-                    //             if($x<$this->partitionPlateX-1){
-                    //                 $this->Alpha($x);
-                    //                 $this->Beta($x);
-                    //             }
-                    //         }
-                    //         $N=$this->partitionPlateX-1;
-                    //         $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
-                    //         if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
-                    //             $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
-                    //         }
-                    //         //расчёт обратным шагом по оси x от конца источника и до конца пластины
-                    //         for($x=$N-1;$x>=$frontX-1;$x--){
-                    //             $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
-                    //             if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
-                    //                 $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
-                    //             }
-                    //         }
-                    //     }
-                    // }
                 }
             }
-        // $this->koef_Progon_Matrix=array(
-        //     "Alpha"=>array(),
-        //     "Beta"=>array(),
-        // ); 
+        }
+    }
+
+    private function go_X_count_source_previos_area($start_index_Z,$exit_index_Z,$start_index_X,$start_index_Y,$exit_index_Y){
+        $this->nextStartPosition=1;
+
+        for($t=1; $t<$this->justMomentOfTime;$t++){
+            for($z=$start_index_Z; $z<$exit_index_Z; $z++){
+                for($y=$start_index_Y; $y<$exit_index_Y; $y++){
+                    for($x=$start_index_X; $x<$this->nextStartPosition+1; $x++){
+                        $this->A($t,$z,$x,$y,"X");
+                        $this->B($t,$z,$x,$y,"X");
+                        $this->C($t,$z,$x,$y,"X");
+                        $this->D($t,$z,$x,$y,"X");
+                        if($x<$this->nextStartPosition){
+                            $this->Alpha($x);
+                            $this->Beta($x);
+                        }
+                    }
+                    $N=$this->nextStartPosition;
+
+                    $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
+                    if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
+                        $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
+                    }
+                    //расчёт обратным шагом по всей оси x
+                    for($x=$N-1;$x>=1;$x--){
+                        $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
+                        if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
+                            $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
+                        }
+                    }
+                }
+            }
+            $this->nextStartPosition++;
+        }
+    }
+
+    private function go_X_count_source_front_area($start_index_Z,$exit_index_Z,$exit_index_X,$start_index_Y,$exit_index_Y){
+        $this->nextStartPosition=1;
+
+        for($t=1; $t<$this->justMomentOfTime;$t++){
+            for($z=$start_index_Z; $z<$exit_index_Z; $z++){
+                for($y=$start_index_Y; $y<$exit_index_Y; $y++){
+                    for($x=$this->nextStartPosition+$this->partitionSourceX; $x<$exit_index_X; $x++){
+                        $this->A($t,$z,$x,$y,"X");
+                        $this->B($t,$z,$x,$y,"X");
+                        $this->C($t,$z,$x,$y,"X");
+                        $this->D($t,$z,$x,$y,"X");
+                        if($x<$exit_index_X-1){
+                            $this->Alpha($x);
+                            $this->Beta($x);
+                        }
+                    }
+                    $N=$exit_index_X-1;
+
+                    $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
+                    if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
+                        $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
+                    }
+                    //расчёт обратным шагом по всей оси x
+                    for($x=$N-1;$x>=$this->nextStartPosition+$this->partitionSourceX;$x--){
+                        $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
+                        if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
+                            $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
+                        }
+                    }
+                }
+            }
+            $this->nextStartPosition++;
+        }
+    }
+
+    private function go_X($time_moment){
+
+        $this->go_X_count(0,$this->sourceZ-1,1,$this->partitionPlateX,$this->sourceY-1,$this->plateY);
+        $this->go_X_count($this->sourceZ-1,$this->plateZ,1,$this->partitionPlateX,0,$this->plateY);
+        $this->go_X_count_source_previos_area(0,$this->sourceZ-1,1,0,$this->sourceY-1);
+        $this->go_X_count_source_front_area(0,$this->sourceZ-1,$this->partitionPlateX,0,$this->sourceY-1);
+
+        
     }
 
     //this is Lambda

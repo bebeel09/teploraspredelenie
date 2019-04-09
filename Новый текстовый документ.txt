@@ -1,0 +1,114 @@
+// for($z=0;$z<$this->plateZ;$z++){
+        //     for($y=0;$y<$this->plateY;$y++){
+        //         if($z>=$this->sourceZ-1){
+        //             # проходим по всей оси x в случае если на пути не встречается горелка
+        //             for($x=1;$x<$this->partitionPlateX;$x++){
+        //                 $this->A($t,$z,$x,$y,"X");
+        //                 $this->B($t,$z,$x,$y,"X");
+        //                 $this->C($t,$z,$x,$y,"X");
+        //                 $this->D($t,$z,$x,$y,"X");
+        //                 if($x<$this->partitionPlateX-1){
+        //                     $this->Alpha($x);
+        //                     $this->Beta($x);
+        //                 }
+        //             }
+        //             $N=$this->partitionPlateX-1;
+        //             $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
+        //             if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
+        //                 $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
+        //             }
+        //             //расчёт обратным шагом по всей оси x
+        //             for($x=$N-1;$x>=1;$x--){
+        //                 $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
+        //                 if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
+        //                     $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
+        //                 }
+        //             }
+
+        //         }else if($y>=$this->sourceY-1 ){
+        //               # проходим по всей оси x в случае если на пути не встречается горелка
+        //               for($x=1;$x<$this->partitionPlateX;$x++){
+        //                     $this->A($t,$z,$x,$y,"X");
+        //                     $this->B($t,$z,$x,$y,"X");
+        //                     $this->C($t,$z,$x,$y,"X");
+        //                     $this->D($t,$z,$x,$y,"X");
+        //                     if($x<$this->partitionPlateX-1){
+        //                         $this->Alpha($x);
+        //                         $this->Beta($x);
+        //                     }
+        //                 }
+        //                 $N=$this->partitionPlateX-1;
+        //                 $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
+        //                 if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
+        //                     $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
+        //                 }
+        //                 //расчёт обратным шагом по всей оси x
+        //                 for($x=$N-1;$x>=1;$x--){
+        //                     $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
+        //                     if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
+        //                         $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
+        //                     }
+        //                 }           
+        //             }
+                    // else {
+                    //     # проходим по оси x деля её на область до и после горелки
+                    //     $frontX=$this->nextStartPosition+$this->partitionSourceX;
+                    //     for($x=1;$x<=$this->nextStartPosition;$x++){
+                    //         $this->A($t,$z,$x,$y,"X");
+                    //         $this->B($t,$z,$x,$y,"X");
+                    //         $this->C($t,$z,$x,$y,"X");
+                    //         $this->D($t,$z,$x,$y,"X");
+                    //         if($x<$this->nextStartPosition+1){
+                    //             $this->Alpha($x);
+                    //             $this->Beta($x);
+                    //         }
+                    //     }
+                    //     $N=$this->nextStartPosition;
+                    //     $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
+                    //     if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
+                    //         $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
+                    //     }
+                    //     //расчёт обратным шагом по оси x от начала пластины и до начала источника
+                    //     for($x=$N-1;$x>0;$x--){
+                    //         $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
+                    //         if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
+                    //             $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
+                    //         }
+                    //     }
+
+                    //     $this->koef_Progon_Matrix=array(
+                    //         "Alpha"=>array(),
+                    //         "Beta"=>array(),
+                    //     ); 
+    
+                    //     if($this->nextStartPosition+$this->partitionSourceX!=$this->partitionPlateX-1){
+                    //         for($x=$frontX-1;$x<$this->partitionPlateX;$x++){
+                    //             $this->A($t,$z,$x,$y,"X");
+                    //             $this->B($t,$z,$x,$y,"X");
+                    //             $this->C($t,$z,$x,$y,"X");
+                    //             $this->D($t,$z,$x,$y,"X");
+                    //             if($x<$this->partitionPlateX-1){
+                    //                 $this->Alpha($x);
+                    //                 $this->Beta($x);
+                    //             }
+                    //         }
+                    //         $N=$this->partitionPlateX-1;
+                    //         $this->Raspredelenie_temperature[$t][$z][$N][$y]=round((-$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Beta"][$N-1]-$this->koef_Matrix["D"][$N])/($this->koef_Matrix["B"][$N]+$this->koef_Matrix["C"][$N]*$this->koef_Progon_Matrix["Alpha"][$N-1]),2);
+                    //         if ($this->Raspredelenie_temperature[$t][$z][$N][$y]<$this->plateTemperature){
+                    //             $this->Raspredelenie_temperature[$t][$z][$N][$y]=$this->plateTemperature;
+                    //         }
+                    //         //расчёт обратным шагом по оси x от конца источника и до конца пластины
+                    //         for($x=$N-1;$x>=$frontX-1;$x--){
+                    //             $this->Raspredelenie_temperature[$t][$z][$x][$y]=round($this->koef_Progon_Matrix["Alpha"][$x]*$this->Raspredelenie_temperature[$t][$z][$x+1][$y]+$this->koef_Progon_Matrix["Beta"][$x],2);
+                    //             if ($this->Raspredelenie_temperature[$t][$z][$x][$y]<$this->plateTemperature){
+                    //                 $this->Raspredelenie_temperature[$t][$z][$x][$y]=$this->plateTemperature;
+                    //             }
+                    //         }
+                    //     }
+                    // }
+                }
+            }
+        // $this->koef_Progon_Matrix=array(
+        //     "Alpha"=>array(),
+        //     "Beta"=>array(),
+        // ); 
