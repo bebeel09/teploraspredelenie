@@ -132,13 +132,13 @@ $step_param=array(
  $test=new Teploraspredelenie($plate_param,$source_param,$step_param);
 
 
- //var_dump($test->koef_heat_emission(1500));
-// var_dump($test->thermophysical_properties(-100));
+//var_dump($test->koef_heat_emission(612.12));
+ //var_dump($test->thermophysical_properties(187.25));
  //var_dump($res=$test->koef_heat_emission(20));
-$test->show_all_parametrs();
+//$test->show_all_parametrs();
 $test->count_Raspr_Temperature();
  //$test->show_Progon_koef();
-//  $test->show_koef_Matrix();
+  //$test->show_koef_Matrix();
 $test->show_Raspredelenie();
 
 
