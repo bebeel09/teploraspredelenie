@@ -139,7 +139,8 @@ $step_param=array(
 $test->count_Raspr_Temperature();
  //$test->show_Progon_koef();
   //$test->show_koef_Matrix();
-$test->show_Raspredelenie();
+//$test->show_Raspredelenie();
+$test->csv_write();
 
 
 ?>

@@ -80,8 +80,6 @@ class Teploraspredelenie{
 
 
     function __construct($plate_proporites, $source_proporites, $step_proporites){
-       global $plateMaterial;
-       
         # параметры для пластины
         $this->plateX=$plate_proporites["plateX"];
         $this->plateY=$plate_proporites["plateY"];
@@ -98,14 +96,18 @@ class Teploraspredelenie{
 
         # параметры шагов
         $this->timeStep=$step_proporites["timeStep"];
-        $this->step=0.3;
+        $this->step=$this->sourceShift;
 
         $this->time=round(($this->plateX-$this->sourceX)/$this->sourceSpeed,1)+0.1;
         $this->justMomentOfTime=$this->time/$this->timeStep;
 
         $this->sourceShift=$this->sourceSpeed*$this->timeStep;
         $this->partitionPlateX=ceil($this->plateX/$this->sourceShift);
+        $this->plateY=ceil($this->plateY/$this->sourceShift);
+        $this->plateZ=ceil($this->plateZ/$this->sourceShift);
         $this->partitionSourceX=round($this->sourceX/$this->sourceShift);
+        $this->sourceY=round($this->sourceY/$this->sourceShift);
+        $this->sourceZ=round($this->sourceZ/$this->sourceShift);
         
 
         # генерация сеточной разбивки пластины и выставление начальных параметров в каждой ячейке
@@ -232,7 +234,7 @@ class Teploraspredelenie{
 
     } 
     
-    public function count_Y($start_index_Z,$exit_index_Z,$start_index_Y,$exit_index_Y,$start_index_X,$exit_index_X){
+    private function count_Y($start_index_Z,$exit_index_Z,$start_index_Y,$exit_index_Y,$start_index_X,$exit_index_X){
         $this->nextStartPosition=1;
 
         for($t=1; $t<$this->justMomentOfTime;$t++){       
@@ -282,7 +284,7 @@ class Teploraspredelenie{
         }
     }
 
-    public function count_Z($start_index_Z){
+    private function count_Z($start_index_Z){
         $this->nextStartPosition=1;
 
         for($t=1; $t<$this->justMomentOfTime;$t++){       
@@ -450,7 +452,7 @@ class Teploraspredelenie{
     }
 
     //this is Lambda
-    function thermophysical_properties( $temperature){
+   private function thermophysical_properties( $temperature){
         $index=array(25,200,400,600,800,1000,1200,1300,1400,1462,1465,1470,1473,1477,1485,1495,1503,1508,1539,1600);
         for($i=0; $i<count($index); $i++){
             if ($temperature<$index[$i] ){
@@ -469,7 +471,7 @@ class Teploraspredelenie{
     
     }
 
-    function koef_heat_emission($temperature){
+   private function koef_heat_emission($temperature){
         $emission;
         $index_prop;
         
@@ -493,7 +495,7 @@ class Teploraspredelenie{
     }
 
     //посчитать коэффицент "A"
-    function A($t,$z,$x,$y,$orientation){
+    private function A($t,$z,$x,$y,$orientation){
         $L_n=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y]);
         switch ($orientation){
             case "X":
@@ -523,7 +525,7 @@ class Teploraspredelenie{
     }
 
     //посчитать коэффицент "B"
-    function B($t,$z,$x,$y,$orientation){
+    private function B($t,$z,$x,$y,$orientation){
         $temperatureN=$this->Raspredelenie_temperature[$t-1][$z][$x][$y];
 
         $parametricN=$this->thermophysical_properties($temperatureN);
@@ -664,7 +666,7 @@ class Teploraspredelenie{
     }
 
     //посчитать коэффицент "С"
-    function C($t,$z,$x,$y,$orientation){
+    private function C($t,$z,$x,$y,$orientation){
         $L_n=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y]);
 
         switch ($orientation){
@@ -697,7 +699,7 @@ class Teploraspredelenie{
     }   
 
     //посчитать коэффицент "D"
-    function D($t,$z,$x,$y,$orientation){
+    private function D($t,$z,$x,$y,$orientation){
         $temperature_previos=$this->Raspredelenie_temperature[$t-1][$z][$x][$y];
 
         $parametricN=$this->thermophysical_properties($temperature_previos);
@@ -815,7 +817,7 @@ class Teploraspredelenie{
 
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==
 
-    function A_back($t,$z,$x,$y){
+    private function A_back($t,$z,$x,$y){
         $L_n=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y]);
         if ($x==0) $this->koef_Matrix["A"][$x]=0;    
         else{
@@ -824,7 +826,7 @@ class Teploraspredelenie{
         }
     }
 
-    function B_back($t,$z,$x,$y){
+    private function B_back($t,$z,$x,$y){
         $prom_vicheslenie_2=(-2*$teploemkostN*$plotnostN*pow($this->sourceShift/1000,2))/$this->timeStep;
 
         $temperatureN=$this->Raspredelenie_temperature[$t-1][$z][$x][$y];
@@ -866,13 +868,13 @@ class Teploraspredelenie{
         }
     }
 
-    function C_back($t,$z,$x,$y){
+    private function C_back($t,$z,$x,$y){
         $L_n=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y]);
         $L_previos=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x+1][$y]);         
         $this->koef_Matrix["C"][$x]=$L_previos["teploprovodnost"]+$L_n["teploprovodnost"]; 
     }
 
-    function D_back($t,$z,$x,$y){
+    private function D_back($t,$z,$x,$y){
         $temperatureN=$this->Raspredelenie_temperature[$t-1][$z][$x][$y];
 
         $parametricN=$this->thermophysical_properties($temperatureN);
@@ -912,7 +914,7 @@ class Teploraspredelenie{
 
     }
 
-    function Alpha_back($index){
+    private function Alpha_back($index){
         if ($index!=$this->nextStartPosition-1){
             $this->koef_Progon_Matrix["Alpha"][$index]=(-$this->koef_Matrix["A"][$index])/($this->koef_Matrix["B"][$index]+$this->koef_Matrix["C"][$index]*$this->koef_Progon_Matrix["Alpha"][$index+1]);
         }else{ 
@@ -920,11 +922,30 @@ class Teploraspredelenie{
         } 
     }
 
-    function Beta_back($index){
+    private function Beta_back($index){
         if ($index!=$this->nextStartPosition-1){
             $this->koef_Progon_Matrix["Beta"][$index]=($this->koef_Matrix["D"][$index]-$this->koef_Matrix["C"][$index]*$this->koef_Progon_Matrix["Beta"][$index+1])/($this->koef_Matrix["B"][$index]+$this->koef_Matrix["C"][$index]*$this->koef_Progon_Matrix["Alpha"][$index+1]);
         }else {
             $this->koef_Progon_Matrix["Beta"][$index]=$this->koef_Matrix["D"][$index]/$this->koef_Matrix["B"][$index];
+        }
+    }
+
+    ##################################################################
+
+    public function csv_write(){
+        $date_now=date('Y-m-d H:i:s');
+        $date_now=str_replace(":","-",$date_now);
+        var_dump($date_now);
+        mkdir("result/{$date_now}",0700);
+        for ($t=0;$t<count($this->Raspredelenie_temperature);$t++){
+            mkdir("result/{$date_now}/{$t}",0700);
+                for ($z=0;$z<count($this->Raspredelenie_temperature[0]);$z++){
+                    $file_open=fopen("result/{$date_now}/{$t}/{$z}.csv",'w');
+                    for($x=0;$x<count($this->Raspredelenie_temperature[$t][$z]);$x++){
+                        fputcsv($file_open,$this->Raspredelenie_temperature[$t][$z][$x],";");
+                    }
+                    fclose($file_open);
+                }
         }
     }
 
@@ -972,10 +993,9 @@ class Teploraspredelenie{
                     $table.="</tr>";
                 }
                 $table.="<table>";
-               
+            }
         }
-        } echo $table;
-
+        echo $table;
 }
 
     public  function show_koef_Matrix(){
