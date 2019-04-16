@@ -10,7 +10,7 @@ class Teploraspredelenie{
    private $plateTemperature; //начальная температура пластины 
    private $plateMaterial;
 
-   private $ambient_temperature=10;//температура окружающей среды
+   private $ambient_temperature=20;//температура окружающей среды
     
     # Шаги разбиения
     private $step;//шаг по координатам
@@ -598,9 +598,9 @@ class Teploraspredelenie{
                     if ($z==0){
                         switch ($y){
                             case $this->sourceY:
-                                $parametric_next=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y+1]);
-                                $L_next=$parametric_next["teploprovodnost"];
-                                $this->koef_Matrix["B"][$y]=$prom_vicheslenie-($L_n+$L_next)+2*$this->koef_heat_emission($temperatureN)*($this->step/1000);
+                                    $parametric_next=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y+1]);
+                                    $L_next=$parametric_next["teploprovodnost"];
+                                    $this->koef_Matrix["B"][$y]=$prom_vicheslenie-($L_n+$L_next)+2*$this->koef_heat_emission($temperatureN)*($this->step/1000);
                             break;
                 
                             case $this->plateY-1:
@@ -610,11 +610,12 @@ class Teploraspredelenie{
                             break;
                 
                             default:
-                                $parametric_next=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y+1]);
-                                $L_next=$parametric_next["teploprovodnost"];
-                                $parametric_previos=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y-1]);
-                                $L_previos=$parametric_previos["teploprovodnost"];
-                                $this->koef_Matrix["B"][$y]=$prom_vicheslenie-($L_n+$L_previos)-($L_next+$L_n)+2*$this->koef_heat_emission($temperatureN)*($this->step/1000);
+                            $parametric_previos=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y-1]);
+                            $L_previos=$parametric_previos["teploprovodnost"];
+                            $parametric_next=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y+1]);
+                            $L_next=$parametric_next["teploprovodnost"];
+                            $this->koef_Matrix["B"][$y]=$prom_vicheslenie-($L_n+$L_previos)-($L_next+$L_n)+2*$this->koef_heat_emission($temperatureN)*($this->step/1000);
+                                    
                             break;
                             }
                     }else{
@@ -632,20 +633,20 @@ class Teploraspredelenie{
                             break;
                 
                             default:
+                            $parametric_previos=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y-1]);
+                            $L_previos=$parametric_previos["teploprovodnost"];        
                                 $parametric_next=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y+1]);
                                 $L_next=$parametric_next["teploprovodnost"];
-                                $parametric_previos=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z][$x][$y-1]);
-                                $L_previos=$parametric_previos["teploprovodnost"];
                                 $this->koef_Matrix["B"][$y]=$prom_vicheslenie-($L_n+$L_previos)-($L_next+$L_n);
                             break;
                         }
-                    }                                         
+                    }
                 break;
 
                 case "Z":
                     switch ($z){
                         case $this->plateZ-1:
-                            $parametric_previos_mesh=$this->thermophysical_properties($Raspredelenie_temperature[$t-1][$z-1][$x][$y]);
+                            $parametric_previos_mesh=$this->thermophysical_properties($Raspredelenie_temperature[$t][$z-1][$x][$y]);
                             $L_previos_mesh=$parametric_previos_mesh["teploprovodnost"];
                             $this->koef_Matrix["B"][$z]=$prom_vicheslenie-($L_n+$L_previos_mesh)+2*$this->koef_heat_emission($temperatureN)*($this->step/1000);
                         break;
@@ -653,9 +654,9 @@ class Teploraspredelenie{
                         default:
                             $parametric_next=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z+1][$x][$y]);
                             $L_next=$parametric_next["teploprovodnost"];
-                            $parametric_previos=$this->thermophysical_properties($this->Raspredelenie_temperature[$t-1][$z-1][$x][$y]);
-                            $L_previos=$parametric_previos["teploprovodnost"];
-                            $this->koef_Matrix["B"][$z]=$prom_vicheslenie-($L_n+$L_previos)-($L_next+$L_n);
+                            $parametric_previos_mesh=$this->thermophysical_properties($this->Raspredelenie_temperature[$t][$z-1][$x][$y]);
+                            $L_previos_mesh=$parametric_previos_mesh["teploprovodnost"];
+                            $this->koef_Matrix["B"][$z]=$prom_vicheslenie-($L_n+$L_previos_mesh)-($L_next+$L_n);
                         break;
                         }
                 break;
@@ -702,10 +703,8 @@ class Teploraspredelenie{
         $parametricN=$this->thermophysical_properties($temperature_previos);
         $parametricSol=$this->thermophysical_properties($this->sourceTemperature);
         
-        
         $L_sol=$parametricSol["teploprovodnost"];
         
-
         $plotnostN=$parametricN["plotnost"];//this is Ro proporites
         $teploemkostN=$parametricN["teploemkost"];// this is C proporites
         $L_n=$parametricN["teploprovodnost"];
@@ -750,124 +749,41 @@ class Teploraspredelenie{
 
             case "Y":
                 $temperature_previos_mesh=$this->Raspredelenie_temperature[$t][$z][$x][$y-1];
-                    switch ($x){
-                        case ($x>=$this->nextStartPosition and $x<=$this->nextStartPosition+$this->partitionSourceX-1):
-                        if ($x==0){
-                            if ($z==0){
-                                switch ($y){
-                                    case $this->sourceY:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_previos+$L_n)*$temperature_previos_mesh-2*$this->koef_heat_emission($temperature_previos)*($this->step/1000)*$this->ambient_temperature;
-                                    break;        
-                        
-                                    default:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-2*$this->ambient_temperature*$this->koef_heat_emission($temperature_previos)*($this->step/1000);
-                                    break;
-                                    }
-                            }else{
-                                switch ($y){
-                                    case $this->sourceY:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_previos+$L_n)*$temperature_previos_mesh;
-                                    break;        
-                    
-                                    default:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos;
-                                    break;
-                                    }
-                                }
-                        }else{
-                            if ($z==0){
-                                switch ($y){
-                                    case $this->sourceY:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_sol+$L_n)*$this->sourceTemperature-2*$this->koef_heat_emission($temperature_previos)*($this->step/1000)*$this->ambient_temperature;
-                                    break;        
-                        
-                                    default:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-2*$this->ambient_temperature*$this->koef_heat_emission($temperature_previos)*($this->step/1000);
-                                    break;
-                                    }
-                            }else{
-                                switch ($y){
-                                    case $this->sourceY:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_sol+$L_n)*$this->sourceTemperature;
-                                    break;        
-                    
-                                    default:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos;
-                                    break;
-                                    }
-                                }
+                $parametric_previos_mesh=$this->thermophysical_properties($temperature_previos_mesh);
+                $L_previos_mesh=$parametric_previos_mesh["teploprovodnost"];    
+                if ($z==0 or $z==$this->PlateZ-1){
+                    switch ($y){
+                            case $this->sourceY:
+                                $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_previos_mesh+$L_n)*$temperature_previos_mesh-2*$this->koef_heat_emission($temperature_previos)*($this->step/1000)*$this->ambient_temperature;
+                            break;        
+                                
+                            default:
+                                $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-2*$this->ambient_temperature*$this->koef_heat_emission($temperature_previos)*($this->step/1000);
+                            break;
+                        }
+                    }else{
+                        switch ($y){
+                            case $this->sourceY:
+                                $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_previos_mesh+$L_n)*$temperature_previos_mesh;
+                            break;        
+                            
+                            default:
+                                $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos;
+                            break;
                             }
-                        break;
-
-                        default:
-                            if ($z==0){
-                                switch ($y){
-                                    case $this->sourceY:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_previos+$L_n)*$temperature_previos_mesh-2*$this->koef_heat_emission($temperature_previos)*($this->step/1000)*$this->ambient_temperature;
-                                    break;        
-                        
-                                    default:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-2*$this->ambient_temperature*$this->koef_heat_emission($temperature_previos)*($this->step/1000);
-                                    break;
-                                    }
-                            }else{
-                                switch ($y){
-                                    case $this->sourceY:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos-($L_previos+$L_n)*$temperature_previos_mesh;
-                                    break;        
-                    
-                                    default:
-                                        $this->koef_Matrix["D"][$y]=$prom_vicheslenie*$temperature_previos;
-                                    break;
-                                    }
-                                }
-                        break;
                         }
             break;
             
             case "Z":
-                $temperature_previos_mesh=$this->Raspredelenie_temperature[$t][$z-1][$x][$y];
                 switch ($z){
                     case $this->sourceZ:
-                        switch ($y){
-                            case $y>=0 and $y<$this->sourceY:
-                                switch ($x){
-                                    case $x>=$this->nextStartPosition and $x<$this->nextStartPosition+$this->partitionSourceX:
-                                    if ($x==0){
-                                        $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_previos)*$temperature_previos_mesh;
-                                    }else{
-                                        $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_sol)*$this->sourceTemperature;
-                                    }
-                                    break;
-            
-                                    default:
-                                    $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_previos)*$temperature_previos_mesh;
-                                    break;
-                                }
-                            break;
-            
-                            default:
-                                if ($y==0){
-                                    switch ($x){
-                                        case $x>=$this->nextStartPosition and $x<$this->nextStartPosition+$this->partitionSourceX:
-                                        if ($x==0){
-                                            $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_previos)*$temperature_previos_mesh;
-                                        }else{
-                                            $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_sol)*$this->sourceTemperature;
-                                        }
-                                        break;
-            
-                                        default:
-                                        $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_previos)*$temperature_previos_mesh;
-                                        break;
-                                    }
-                                }else{
-                                $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_previos)*$temperature_previos_mesh;
-                                }
-                            break;
-                        }
+                    $temperature_previos_mesh=$this->Raspredelenie_temperature[$t][$z-1][$x][$y];
+                    $parametric_previos_mesh=$this->thermophysical_properties($temperature_previos_mesh);
+                    $L_previos_mesh=$parametric_previos_mesh["teploprovodnost"];
+
+                        $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-($L_n+$L_previos_mesh)*$temperature_previos_mesh;
                     break;
-            
+                                   
                     case $this->plateZ-1:
                         $this->koef_Matrix["D"][$z]=$prom_vicheslenie*$temperature_previos-2*$this->koef_heat_emission($temperature_previos)*($this->step/1000)*$this->ambient_temperature;
                     break;
@@ -1083,9 +999,5 @@ class Teploraspredelenie{
     }
 
 }
-
-
-
-
 
 ?>
