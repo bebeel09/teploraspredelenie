@@ -133,14 +133,14 @@ $step_param=array(
 
 
 //var_dump($test->koef_heat_emission(612.12));
- //var_dump($test->thermophysical_properties(187.25));
+ //var_dump($test->thermophysical_properties(1700));
  //var_dump($res=$test->koef_heat_emission(20));
 //$test->show_all_parametrs();
 $test->count_Raspr_Temperature();
  //$test->show_Progon_koef();
   //$test->show_koef_Matrix();
-//$test->show_Raspredelenie();
-$test->csv_write();
+$test->show_Raspredelenie();
+//$test->csv_write();
 
 
 ?>
