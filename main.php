@@ -133,7 +133,7 @@ $step_param=array(
 
  $test=new Teploraspredelenie($plate_param,$source_param,$step_param);
 
-// $test->show_all_parametrs();
+ $test->show_all_parametrs();
  $test->count();
 
 // var_dump($test->koef_heat_emission(612.12));

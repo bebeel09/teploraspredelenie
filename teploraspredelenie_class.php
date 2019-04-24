@@ -140,13 +140,21 @@ class Teploraspredelenie
 
 # Фукция подсчёта теплораспределения во все моменты времени
     public function count(){
+        $date_now=date('Y-m-d H:i:s');
+        $date_now=str_replace(":","-",$date_now);
+        $dir_name="result/{$date_now}";
+        if(mkdir("result/{$date_now}",0700)){
+            echo "Папка создана с наименованием: '{$date_now}'<br>";
+        }else die();
+
         $this->nextStartPosition=0;
         for ($t = 0; $t < $this->justMomentOfTime; $t++) {
            if ($t<$this->justMomentOfTime-1)$this->go_X_count_source_front_area($this->nextStartPosition);
             if ($t>0) $this->go_X_count_source_back_area($this->nextStartPosition);
             $this->go_Y_count();
             $this->go_z_count();
-            $this->show_Raspredelenie($t);
+            $this->csv_write($t,$dir_name);
+            //$this->show_Raspredelenie($t);
             $this->shift_temperature();
             $this->nextStartPosition++;
         }
@@ -851,6 +859,16 @@ class Teploraspredelenie
 
     ##################################################################
 
+    private function csv_write($t,$path){
+            mkdir("{$path}/{$t}",0700);
+            for ($z=0;$z<$this->partitionPlateZ;$z++){
+                $file_open=fopen("{$path}/{$t}/{$z}.csv",'w');
+                for($x=0;$x<$this->partitionPlateX;$x++){
+                    fputcsv($file_open,$this->Raspredelenie_temperature[$z][$x],";");
+                }
+                fclose($file_open);
+            }
+    }
 
     public  function show_Raspredelenie($t){
         $table.="Момент времени: {$t}<br>";
