@@ -1,41 +1,200 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Zadachka</title>
+    <title>Теплораспределение</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- <script src="js/build.js"></script> -->
 </head>
-<body>
-    <form action="main.php" method="POST" >
-        <p><b>Размеры пластины (в мм) используется материал "сталь 09Г2С":</b></p>
-        x:<input name="plateX" type="text"> <br>
-        y:<input name="plateY" type="text"><br>
-        z:<input name="plateZ" type="text"><br>
 
-        <p><b>Начальная температура пластины (в целсиях):</b></p>
-        t:<input name="plateTemperature" type="text"> <br>
+<body class="container bg-dark ">
+    <form method="POST" action="main.php" id="myForm" name="forma" class="align-items-center mt-3">
+        <div class="form d-flex flex-column flex-sm-column flex-md-row justify-content-between">
+            <div class="plate bg-light p-3 mt-3 mt-3 mt-sm-3 mt-md-0 mt-md-0">
+                <label for="PlateSize">Размеры пластины(материал "сталь 09Г2С"):</label>
+                <div id=palteSize>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">x</span>
+                        </div>
+                        <input type="number" id="plateX" name="plateX" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм.</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">y</span>
+                        </div>
+                        <input type="number" id="plateY" name="plateY" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм.</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">z</span>
+                        </div>
+                        <input type="number" id="plateZ" name="plateZ" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм.</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <label for="plateTemp">Начальная температура пластины</label>
+                    <div id="plateTemp">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">t</span>
+                            </div>
+                            <input type="number" id="plateTemperature" name="plateTemperature" class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text">℃</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <p><b>Размеры источника нагрева (в мм):</b></p>
-        x:<input name="sourceX" type="text"> <br>
-        y:<input name="sourceY" tupe="text"><br>
-        z:<input name="sourceZ" tupe="text"><br>
-        
-        <p><b>Температура источника нагрева (в целсиях):</b></p>
-        t:<input name="sourceTemperature" type="text"> <br>
+            <div class="plate bg-light p-3 mt-3 mt-sm-3 mt-md-0">
+                <label for="sourceX">Размеры источника нагрева:</label>
+                <div id=palteSize>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">x</span>
+                        </div>
+                        <input type="number" id="sourceX" name="sourceX" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм.</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">y</span>
+                        </div>
+                        <input type="number" id="sourceY" name="sourceY" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм.</span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">z</span>
+                        </div>
+                        <input type="number" id="sourceZ" name="sourceZ" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм.</span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <label for="plateTemp">Температура источника нагрева</label>
+                <div id="plateTemp">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">t</span>
+                        </div>
+                        <input type="number" id="sourceTemperature" name="sourceTemperature" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">℃</span>
+                        </div>
+                    </div>
+                </div>
+                <label for="plateTemp">Скорость прохода горелки по пластине</label>
+                <div id="plateTemp">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">S</span>
+                        </div>
+                        <input type="number" id="sourceSpeed" name="sourceSpeed" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм./сек.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <p><b>Скорость горелки (мм/сек.):</b></p>
-        Скорость горелки (мм/сек.):<input name="sourceSpeed" type="text"><br>
-        Шаг по времени: <input name="timeStep" type="number" placeholder="0,0" step="0.1"><br>
-
-      
-
-       
-
-     <br> <input type="submit" value="pusk" style="width:10%; height:50px;" >
-
+            <div class="plate bg-light p-3 mt-3 mt-sm-3 mt-md-0">
+                <label for="plateTemp">Температура окружающией среды</label>
+                <div id="plateTemp">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">t</span>
+                        </div>
+                        <input type="number" id="ambient" name="ambientTemperature" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">℃</span>
+                        </div>
+                    </div>
+                </div>
+                <label for="plateTemp"> Шаг по времени:</label>
+                <div id="plateTemp">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">S</span>
+                        </div>
+                        <input type="number" id="timeStep" name="timeStep" placeholder="0,0" step="0.1"
+                            class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">мм./сек.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3 mb-3">
+            <input type="submit" value="Пуск" id="go" class="btn btn-success btn-block btn-lg">
+        </div>
     </form>
+
+    <script src="js/index.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            function delete_class(block) {
+                block.classList.remove("shake", "animated", "error");
+            }
+
+            function check() {
+                var flag = 0;
+                $("form[name='forma']").find("input").not('[type="submit"]').each(function () {
+                    if ($(this).val() == "") {
+                        var a = document.getElementById(this.id);
+                        a.classList.add("shake", "animated", "error");
+                        flag = 1;
+                        setTimeout(delete_class, 1000, a);
+
+                    }
+                });
+                if (flag == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            // $('#go').click(function (e) {
+            //     e.preventDefault();
+
+            //     if (check() == true) {
+            //         // собираем данные с формы
+            //         var data_form = $('#myForm').serialize();
+            //         // отправляем данные
+            //         $.ajax({
+            //             url: "main.php", // куда отправляем
+            //             type: "POST", // метод передачи
+            //             data: data_form,
+            //             // после получения ответа сервера
+            //             success: function (result) {
+            //                 alert(result); // выводим ответ сервера
+            //             }
+            //         });
+            //     }
+            // });
+        });
+    </script>
 </body>
+
 </html>

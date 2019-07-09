@@ -1,5 +1,6 @@
 <?php 
-include_once "function.php";
+//include_once "function.php";
+include_once "Teploraspredelenie_class.php";
 
 $material_09g2s=array(
     "1600"=>array(
@@ -112,6 +113,7 @@ $plate_param=array(
     "plateY"=>(int)$_POST["plateY"],
     "plateZ"=>(int)$_POST["plateZ"],
     "plateTemperature"=>(float)$_POST["plateTemperature"],
+    "ambientTemperature"=>(float)$_POST["ambientTemperature"],
     "material"=>$material_09g2s,
 );
 
@@ -131,16 +133,13 @@ $step_param=array(
 
  $test=new Teploraspredelenie($plate_param,$source_param,$step_param);
 
+ $test->show_all_parametrs();
+ $test->count();
 
-//var_dump($test->koef_heat_emission(612.12));
- //var_dump($test->thermophysical_properties(187.25));
- //var_dump($res=$test->koef_heat_emission(20));
-//$test->show_all_parametrs();
-$test->count_Raspr_Temperature();
- //$test->show_Progon_koef();
-  //$test->show_koef_Matrix();
-//$test->show_Raspredelenie();
-$test->csv_write();
+
+// $test->show_all_parametrs();
+// $test->count_Raspr_Temperature();
+
 
 
 ?>
